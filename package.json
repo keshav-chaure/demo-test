@@ -1,0 +1,22 @@
+{
+  "name": "demo-test",
+  "version": "1.0.0",
+  "description": "vedio management",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keshav-chaure/demo-test.git"
+  },
+  "author": "keshav chaure",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/keshav-chaure/demo-test/issues"
+  },
+  "homepage": "https://github.com/keshav-chaure/demo-test#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
