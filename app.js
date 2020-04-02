@@ -1,6 +1,14 @@
 const express = require('express');
 
+const exphbs = require('express-handlebars');
 const app =  express();
+
+// Handlebars Middleware
+
+app.engine('handlebars',exphbs({
+    defaultLayout:'main'
+}));
+app.set('view engine','handlebars');
 
 // how middleware works
 app.use(function(req,res,next){
@@ -13,12 +21,12 @@ app.use(function(req,res,next){
 // Index Route
 app.get('/',(req,res)=>{
     console.log(req.name)
-    res.send('Index')
+    res.render('index')
 });
 
 //About Route
-app.get('/',(req,res)=>{
-    res.send('About')
+app.get('/about',(req,res)=>{
+    res.render('about')
 });
 
 const port = 5000;
