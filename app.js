@@ -20,8 +20,11 @@ app.use(function(req,res,next){
 
 // Index Route
 app.get('/',(req,res)=>{
-    console.log(req.name)
-    res.render('index')
+    console.log(req.name);
+    const title='Welcome';
+    res.render('index', {
+        title
+    })
 });
 
 //About Route
