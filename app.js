@@ -2,7 +2,9 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const mongoose= require('mongoose');
-
+const methodOverride = require('method-override');
+const flash = require('connect-flash');
+const session = require('express-session');
 //sudo service mongod start|stop|restart
 //above for terminal cmd 
 
@@ -29,7 +31,34 @@ app.set('view engine','handlebars');
 app.use(bodyParser.urlencoded({ extended: false}))
 app.use(bodyParser.json())
 
+// Method override middleware
+app.use(methodOverride('_method'));
+
+//expresss session middleware
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized:true 
+}))
+
+app.use(flash());
+
+//global variables
+app.use(function(req, res, next){
+ res.locals.success_msg = req.flash('success_msg');
+ res.locals.error_msg = req.flash('error_msg');
+ res.locals.error = req.flash('error');
+ next();
+})
+
+
 app.use(express.static(__dirname + '/views'));
+
+
+
+
+
+
 
 // how middleware works
 app.use(function(req,res,next){
@@ -63,6 +92,18 @@ app.get('/ideas',(req,res)=>{
             ideas:ideas
         })
     });
+});
+
+//Edit Idea form
+app.get('/ideas/edit/:id',(req,res)=>{
+   Idea.findOne({
+       _id:req.params.id
+   })
+   .then(idea => {
+       res.render('ideas/edit',{
+           idea:idea
+       })
+   }) 
 });
 
 //Add Idea Route
@@ -101,6 +142,36 @@ if(errors.length > 0){
     
 } 
 }) 
+
+
+//Edit From Process
+app.put('/ideas/:id',(req, res)=>{
+ 
+    Idea.findOne({
+        _id:req.params.id
+    })
+    .then(idea=>{
+        //new values
+        idea.title = req.body.title;
+        idea.details = req.body.details;
+
+        idea.save()
+        .then(idea => {
+            res.redirect('/ideas')
+        })
+    })
+})
+
+// Delete idea
+app.delete('/ideas/:id',(req , res) => {
+    Idea.deleteOne({_id:req.params.id})
+    .then(() => {
+        req.flash('success_msg', 'vedio idea removed')
+        res.redirect('/ideas');
+    })
+   
+    
+})
 
 const port = 5000;
 
