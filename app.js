@@ -5,6 +5,10 @@ const mongoose= require('mongoose');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const session = require('express-session');
+const db = require('./config/database')
+
+
+
 //sudo service mongod start|stop|restart
 //above for terminal cmd 
 
@@ -13,7 +17,7 @@ const app =  express();
 //Map global promise - get rid of warning
 mongoose.Promise = global.Promise;
 //connect to mongoose
-mongoose.connect('mongodb://localhost/video-store',{useNewUrlParser:true,useUnifiedTopology:true})
+mongoose.connect(db.mongoURI,{useNewUrlParser:true,useUnifiedTopology:true})
 .then(()=>console.log('Mongodb connected.....'))
 .catch(err => console.log(err));
 
@@ -137,6 +141,7 @@ if(errors.length > 0){
     new Idea(newUser)
     .save()
     .then(idea => {
+        req.flash('success_msg', 'vedio idea added')
         res.redirect('/ideas');
     })
     
@@ -157,6 +162,7 @@ app.put('/ideas/:id',(req, res)=>{
 
         idea.save()
         .then(idea => {
+            req.flash('success_msg', 'vedio idea updated')
             res.redirect('/ideas')
         })
     })
@@ -172,8 +178,8 @@ app.delete('/ideas/:id',(req , res) => {
    
     
 })
-
-const port = 5000;
+//  
+const port = process.env.PORT || 5000; 
 
 app.listen(port,()=>{
     console.log(`Server running on port ${port}`);
